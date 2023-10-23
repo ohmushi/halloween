@@ -1,0 +1,17 @@
+meta {
+  name: add
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base}}/group
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": ""
+  }
+}
