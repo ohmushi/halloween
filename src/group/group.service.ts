@@ -15,12 +15,15 @@ import { providers_tokens } from '../providers.tokens';
 import { Option } from 'fp-ts/Option';
 import { Group } from './entities/group.entity';
 import { GroupExceptions } from './exceptions/group.exceptions';
+import { AnswerToMystery } from './entities/answer-to-mystery';
 
 @Injectable()
 export class GroupService {
   constructor(
     @Inject(providers_tokens.GROUP_REPOSITORY)
     private readonly groups: GroupRepository,
+    @Inject(providers_tokens.ANSWER_TO_MYSTERY)
+    private readonly answerToMystery: AnswerToMystery,
   ) {}
 
   create(dto: CreateGroupDto): Either<Error, string> {
@@ -47,6 +50,7 @@ export class GroupService {
   resolve(resolveDto: {
     groupId: string;
     mysteryCode: string;
+    answer: string;
   }): Either<Error, boolean> {
     return pipe(
       this.groups.byId(resolveDto.groupId),
@@ -55,6 +59,7 @@ export class GroupService {
         this.updateAndSaveGroupIfMysteryIsResolved(
           group,
           resolveDto.mysteryCode,
+          resolveDto.answer,
         ),
       ),
     );
@@ -63,10 +68,12 @@ export class GroupService {
   private updateAndSaveGroupIfMysteryIsResolved(
     group: Group,
     mysteryCode: string,
+    answer: string,
   ): Either<Error, boolean> {
-    const mysteryIsResolved: Either<Error, boolean> = right(true);
+    const resolved = this.answerToMystery.answer({ answer: answer, mysteryCode: mysteryCode });
+    console.log('resolved', resolved);
     return pipe(
-      mysteryIsResolved,
+      resolved,
       flatMap((isResolved) =>
         isResolved ? this.updateAndSaveGroup(group, mysteryCode) : right(false),
       ),

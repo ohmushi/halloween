@@ -10,10 +10,6 @@ import { Option, map } from 'fp-ts/Option';
 import { CodeGenerator } from './infrastructure/code-generator/code-generator';
 import { MysteryException } from './exceptions/mystery.exeptions';
 
-interface resolveResult {
-  mystery: Mystery;
-  responseIsCorrect: boolean;
-}
 
 @Injectable()
 export class MysteryService {
@@ -63,50 +59,13 @@ export class MysteryService {
   }
 
   resolveMystery(dto: {
-    groupId: string;
     code: string;
-    response: string;
+    answer: string;
   }): Either<Error, boolean> {
     return pipe(
       this.mysteries.byCode(dto.code),
-      map((m: Mystery) => this.mysteryIsResolved(m, dto.response)),
+      map((m: Mystery) => m.solution === dto.answer),
       fromOption(() => MysteryException.codeNotFound(dto.code)),
-      flatMap((res: resolveResult) =>
-        this.updateMysteryIfIsResolvedByGroup(res, dto.groupId),
-      ),
-    );
-  }
-
-  private mysteryIsResolved(mystery: Mystery, response: string): resolveResult {
-    return {
-      mystery: mystery,
-      responseIsCorrect: mystery.response === response,
-    };
-  }
-
-  private updateMysteryIfIsResolvedByGroup(
-    res: resolveResult,
-    groupId: string,
-  ): Either<Error, boolean> {
-    return pipe(
-      right(res),
-      flatMap((res: resolveResult) =>
-        res.responseIsCorrect
-          ? this.resolveAndSave(res.mystery, groupId)
-          : right(false),
-      ),
-    );
-  }
-
-  private resolveAndSave(
-    mystery: Mystery,
-    groupId: string,
-  ): Either<Error, boolean> {
-    console.log('resolve and save', mystery);
-    return pipe(
-      mystery.resolvedBy(groupId),
-      flatMap((m) => this.mysteries.add(m)),
-      flatMap(() => right(true)),
     );
   }
 }

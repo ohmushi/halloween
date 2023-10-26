@@ -4,7 +4,9 @@
     {
       "id": "1",
       "name": "test",
-      "mysteriesResolved": []
+      "mysteriesResolved": [
+        "RSN"
+      ]
     }
   ]
 ]

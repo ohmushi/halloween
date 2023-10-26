@@ -16,9 +16,6 @@ import { pipe } from 'fp-ts/function';
 import { getOrElse as eitherGetOrElse } from 'fp-ts/Either';
 import { getOrElse as optionGetOrElse } from 'fp-ts/Option';
 import { Mystery } from './entities/mystery.entity';
-import { ResolveMysteryDto } from './dto/resolve-mystery.dto';
-import { MysteryException } from './exceptions/mystery.exeptions';
-
 @Controller('mystery')
 export class MysteryController {
   constructor(private readonly mysteryService: MysteryService) {}
@@ -46,24 +43,5 @@ export class MysteryController {
         throw new NotFoundException(code);
       }),
     );
-  }
-
-  @Patch('/resolve/:code')
-  @HttpCode(HttpStatus.OK)
-  guess(
-    @Param('code') code: string,
-    @Body() resolveMysteryDto: ResolveMysteryDto,
-  ): { success: boolean } {
-    const success: boolean = pipe(
-      this.mysteryService.resolveMystery({
-        groupId: resolveMysteryDto.groupId,
-        code: code,
-        response: resolveMysteryDto.response,
-      }),
-      eitherGetOrElse((e: MysteryException) => {
-        throw e;
-      }),
-    );
-    return { success: success };
   }
 }

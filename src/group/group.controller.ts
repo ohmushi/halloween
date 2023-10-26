@@ -6,8 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  NotFoundException,
-} from '@nestjs/common';
+  NotFoundException, Query
+} from "@nestjs/common";
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { pipe } from 'fp-ts/lib/function';
@@ -43,14 +43,16 @@ export class GroupController {
     );
   }
 
-  @Patch('/:group_id/resolve/:mystery_code')
+  @Patch('/:group_id/answer/:mystery_code')
   resolve(
     @Param('group_id') groupId: string,
     @Param('mystery_code') mysteryCode: string,
+    @Query('try') answer: string,
   ): { success: boolean } {
     const resolveDto = {
       groupId: groupId,
       mysteryCode: mysteryCode,
+      answer: answer,
     };
     return pipe(
       this.groupService.resolve(resolveDto),

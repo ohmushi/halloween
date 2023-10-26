@@ -6,17 +6,14 @@ export class Mystery {
     readonly id: string | null,
     readonly code: string | null,
     readonly clue: string,
-    readonly response: string,
+    readonly solution: string,
     readonly resolvedByGroups: string[],
   ) {
     if (clue.trim() == '') {
       throw MysteryException.illegalArgument('clue', clue);
     }
-    if (response.trim() == '') {
-      throw MysteryException.illegalArgument('response', response);
-    }
-    if (response.trim() == '') {
-      throw MysteryException.illegalArgument('response', response);
+    if (solution.trim() == '') {
+      throw MysteryException.illegalArgument('solution', solution);
     }
     if (resolvedByGroups.some((id) => id.trim() === '')) {
       throw MysteryException.illegalArgument(
@@ -42,7 +39,7 @@ export class Mystery {
           id,
           this.code,
           this.clue,
-          this.response,
+          this.solution,
           this.resolvedByGroups,
         ),
       (e: MysteryException) => e,
@@ -56,42 +53,10 @@ export class Mystery {
           this.id,
           code,
           this.clue,
-          this.response,
+          this.solution,
           this.resolvedByGroups,
         ),
       (e: MysteryException) => e,
-    );
-  }
-
-  withResponse(response: string): Either<MysteryException, Mystery> {
-    return tryCatch(
-      () =>
-        new Mystery(
-          this.id,
-          this.code,
-          this.clue,
-          response,
-          this.resolvedByGroups,
-        ),
-      (e: MysteryException) => e,
-    );
-  }
-
-  resolvedBy(groupId: string): Either<MysteryException, Mystery> {
-    if (groupId.trim() == '')
-      return left(MysteryException.illegalArgument('groupdId', groupId));
-    const m = this.clone();
-    m.resolvedByGroups.push(groupId);
-    return right(m);
-  }
-
-  private clone(): Mystery {
-    return new Mystery(
-      this.id,
-      this.code,
-      this.clue,
-      this.response,
-      this.resolvedByGroups,
     );
   }
 }
