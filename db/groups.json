@@ -3,14 +3,8 @@
     "1",
     {
       "id": "1",
-      "name": "Confrerie du Plaid"
-    }
-  ],
-  [
-    "2",
-    {
-      "id": "2",
-      "name": "Nakama"
+      "name": "test",
+      "mysteriesResolved": []
     }
   ]
 ]

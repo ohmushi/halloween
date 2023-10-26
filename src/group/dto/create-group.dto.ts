@@ -5,6 +5,6 @@ export class CreateGroupDto {
   constructor(readonly name: string) {}
 
   static toEntity(dto: CreateGroupDto): Either<Error, Group> {
-    return Group.withoutId(dto.name);
+    return Group.create(dto.name);
   }
 }

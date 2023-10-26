@@ -3,24 +3,10 @@
     "1",
     {
       "id": "1",
-      "code": "AFN",
-      "clue": "recursive"
-    }
-  ],
-  [
-    "2",
-    {
-      "id": "2",
-      "code": "ABA",
-      "clue": "recursive"
-    }
-  ],
-  [
-    "3",
-    {
-      "id": "3",
-      "code": "TFU",
-      "clue": "recursive"
+      "code": "RSN",
+      "clue": "music",
+      "response": "note",
+      "resolvedByGroups": []
     }
   ]
 ]

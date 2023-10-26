@@ -1,13 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Either } from 'fp-ts/lib/Either';
+import { Either, fromOption, right } from 'fp-ts/lib/Either';
 import { CreateMysteryDto } from './dto/create-mystery.dto';
 import { providers_tokens } from '../providers.tokens';
 import { MysteryRepository } from './entities/mystery.repository';
 import { pipe } from 'fp-ts/function';
-import { flatMap, map } from 'fp-ts/Either';
+import { flatMap, map as eitherMap } from 'fp-ts/Either';
 import { Mystery } from './entities/mystery.entity';
-import { Option } from 'fp-ts/Option';
+import { Option, map } from 'fp-ts/Option';
 import { CodeGenerator } from './infrastructure/code-generator/code-generator';
+import { MysteryException } from './exceptions/mystery.exeptions';
+
+interface resolveResult {
+  mystery: Mystery;
+  responseIsCorrect: boolean;
+}
 
 @Injectable()
 export class MysteryService {
@@ -22,15 +28,18 @@ export class MysteryService {
     return pipe(
       dto,
       CreateMysteryDto.toEntity,
-      map((m) => this.generateIdAndCode(m)),
+      flatMap((m) => this.generateIdAndCode(m)),
       flatMap(this.mysteries.add),
     );
   }
 
-  private generateIdAndCode(mystery: Mystery): Mystery {
-    return mystery
-      .withId(this.mysteries.nextId())
-      .withCode(this.generateCodeOf(3));
+  private generateIdAndCode(
+    mystery: Mystery,
+  ): Either<MysteryException, Mystery> {
+    return pipe(
+      mystery.withId(this.mysteries.nextId()),
+      flatMap((m) => m.withCode(this.generateCodeOf(3))),
+    );
   }
 
   private generateCodeOf(length: number) {
@@ -51,5 +60,53 @@ export class MysteryService {
 
   findOne(code: string): Option<Mystery> {
     return this.mysteries.byCode(code.toUpperCase());
+  }
+
+  resolveMystery(dto: {
+    groupId: string;
+    code: string;
+    response: string;
+  }): Either<Error, boolean> {
+    return pipe(
+      this.mysteries.byCode(dto.code),
+      map((m: Mystery) => this.mysteryIsResolved(m, dto.response)),
+      fromOption(() => MysteryException.codeNotFound(dto.code)),
+      flatMap((res: resolveResult) =>
+        this.updateMysteryIfIsResolvedByGroup(res, dto.groupId),
+      ),
+    );
+  }
+
+  private mysteryIsResolved(mystery: Mystery, response: string): resolveResult {
+    return {
+      mystery: mystery,
+      responseIsCorrect: mystery.response === response,
+    };
+  }
+
+  private updateMysteryIfIsResolvedByGroup(
+    res: resolveResult,
+    groupId: string,
+  ): Either<Error, boolean> {
+    return pipe(
+      right(res),
+      flatMap((res: resolveResult) =>
+        res.responseIsCorrect
+          ? this.resolveAndSave(res.mystery, groupId)
+          : right(false),
+      ),
+    );
+  }
+
+  private resolveAndSave(
+    mystery: Mystery,
+    groupId: string,
+  ): Either<Error, boolean> {
+    console.log('resolve and save', mystery);
+    return pipe(
+      mystery.resolvedBy(groupId),
+      flatMap((m) => this.mysteries.add(m)),
+      flatMap(() => right(true)),
+    );
   }
 }

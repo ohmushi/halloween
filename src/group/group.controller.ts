@@ -11,7 +11,7 @@ import {
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { pipe } from 'fp-ts/lib/function';
-import { getOrElse as eitherGetOrElse, map } from 'fp-ts/Either';
+import { getOrElse, getOrElse as eitherGetOrElse, map } from 'fp-ts/Either';
 import { getOrElse as optionGetOrElse } from 'fp-ts/lib/Option';
 
 @Controller('group')
@@ -39,6 +39,26 @@ export class GroupController {
       this.groupService.findOne(id),
       optionGetOrElse(() => {
         throw new NotFoundException(id);
+      }),
+    );
+  }
+
+  @Patch('/:group_id/resolve/:mystery_code')
+  resolve(
+    @Param('group_id') groupId: string,
+    @Param('mystery_code') mysteryCode: string,
+  ): { success: boolean } {
+    const resolveDto = {
+      groupId: groupId,
+      mysteryCode: mysteryCode,
+    };
+    return pipe(
+      this.groupService.resolve(resolveDto),
+      map((isResolved) => {
+        return { success: isResolved };
+      }),
+      getOrElse((e: Error) => {
+        throw e;
       }),
     );
   }

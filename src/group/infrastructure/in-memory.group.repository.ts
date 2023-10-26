@@ -11,9 +11,10 @@ export class InMemoryGroupRepository implements GroupRepository {
   nextId(): string {
     return (db.size + 1).toString();
   }
-  add(group: Group): Either<Error, string> {
+
+  add(group: Group): Either<Error, Group> {
     db.set(group.id, group);
-    return right(db.get(group.id).id);
+    return right(db.get(group.id));
   }
 
   all(): Group[] {
