@@ -1,16 +1,10 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
   GroupAlreadyExists,
   GroupExceptions,
   GroupNotFoundException,
-  IllegalArgumentGroupException,
-} from './exceptions/group.exceptions';
+  IllegalArgumentGroup,Exceptio'./exceptions/group.exceptions'ceptions";
 
 @Catch(GroupExceptions)
 export class GroupHttpExceptionFilter<GroupExceptions>

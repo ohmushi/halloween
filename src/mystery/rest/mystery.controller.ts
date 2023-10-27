@@ -1,23 +1,18 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   NotFoundException,
-  HttpCode,
-  HttpStatus,
-  UseFilters,
+  Param,
+  Post,
 } from '@nestjs/common';
-import { MysteryService } from './mystery.service';
-import { CreateMysteryDto } from './dto/create-mystery.dto';
+import { MysteryService } from '../mystery.service';
+import { CreateMysteryDto } from '../dto/create-mystery.dto';
 import { pipe } from 'fp-ts/function';
 import { getOrElse as eitherGetOrElse } from 'fp-ts/Either';
 import { getOrElse as optionGetOrElse } from 'fp-ts/Option';
-import { Mystery } from './entities/mystery.entity';
-import { MysteryHttpExceptionFilter } from './mystery.http-exception.filter';
+import { Mystery } from '../entities/mystery.entity';
+
 @Controller('mystery')
 export class MysteryController {
   constructor(private readonly mysteryService: MysteryService) {}

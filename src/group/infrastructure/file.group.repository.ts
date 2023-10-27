@@ -2,20 +2,16 @@ import { GroupRepository } from '../entities/group.repository';
 import { Injectable } from '@nestjs/common';
 import { Group } from '../entities/group.entity';
 import {
+  flatMap as OflatMap,
   fromEither,
   fromNullable,
   Option,
-  match as Omatch,
-  none,
-  some,
-  flatMap as OflatMap,
 } from 'fp-ts/Option';
 import {
   Either,
   flatMap,
   left,
   map as mapEither,
-  match,
   right,
   sequenceArray,
 } from 'fp-ts/Either';

@@ -8,7 +8,7 @@ import {
   InvalidMysteryException,
   MysteryException,
   MysteryNotFoundException,
-} from './exceptions/mystery.exeptions';
+} from '../exceptions/mystery.exeptions';
 import { Request, Response } from 'express';
 
 @Catch(MysteryException)

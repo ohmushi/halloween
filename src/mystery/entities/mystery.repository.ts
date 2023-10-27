@@ -1,6 +1,7 @@
 import { Either } from 'fp-ts/lib/Either';
 import { Option } from 'fp-ts/Option';
 import { Mystery } from './mystery.entity';
+
 export interface MysteryRepository {
   nextId(): string;
 

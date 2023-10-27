@@ -1,4 +1,4 @@
-import { Either, left, right } from 'fp-ts/Either';
+import { Either, left } from 'fp-ts/Either';
 import { Mystery } from '../entities/mystery.entity';
 import { BadRequestException } from '@nestjs/common';
 

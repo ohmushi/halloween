@@ -1,12 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Either, fromOption, right } from 'fp-ts/lib/Either';
+import { Either, fromOption, flatMap } from 'fp-ts/lib/Either';
 import { CreateMysteryDto } from './dto/create-mystery.dto';
 import { providers_tokens } from '../providers.tokens';
 import { MysteryRepository } from './entities/mystery.repository';
 import { pipe } from 'fp-ts/function';
-import { flatMap, map as eitherMap } from 'fp-ts/Either';
 import { Mystery } from './entities/mystery.entity';
-import { Option, map } from 'fp-ts/Option';
+import { map, Option } from 'fp-ts/Option';
 import { CodeGenerator } from './infrastructure/code-generator/code-generator';
 import { MysteryException } from './exceptions/mystery.exeptions';
 

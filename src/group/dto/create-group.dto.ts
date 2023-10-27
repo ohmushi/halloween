@@ -1,5 +1,5 @@
 import { Group } from '../entities/group.entity';
-import { Either, left, right } from 'fp-ts/Either';
+import { Either, left } from 'fp-ts/Either';
 import { BadRequestException } from '@nestjs/common';
 
 export class CreateGroupDto {

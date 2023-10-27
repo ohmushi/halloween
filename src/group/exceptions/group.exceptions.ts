@@ -1,4 +1,3 @@
-import { string } from 'fp-ts';
 export class GroupExceptions extends Error {
   static notFound(id: string): GroupNotFoundException {
     return new GroupNotFoundException(id);

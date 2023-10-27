@@ -1,4 +1,4 @@
-import { Either, left, right, tryCatch } from 'fp-ts/lib/Either';
+import { Either, tryCatch } from 'fp-ts/lib/Either';
 import { MysteryException } from '../exceptions/mystery.exeptions';
 
 export class Mystery {

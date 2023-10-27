@@ -1,6 +1,6 @@
 import { Module, Provider } from '@nestjs/common';
 import { MysteryService } from './mystery.service';
-import { MysteryController } from './mystery.controller';
+import { MysteryController } from './rest/mystery.controller';
 import { providers_tokens } from '../providers.tokens';
 import { FileMysteryRepository } from './infrastructure/file.mystery.repository';
 import { DefaultCodeGenerator } from './infrastructure/code-generator/default.code-generator';

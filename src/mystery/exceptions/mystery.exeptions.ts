@@ -1,5 +1,3 @@
-import { string } from 'fp-ts';
-
 export class MysteryException extends Error {
   static idNotFound(id: string): MysteryNotFoundException {
     return MysteryNotFoundException.idNotFound(id);

@@ -1,22 +1,19 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   NotFoundException,
+  Param,
+  Patch,
+  Post,
   Query,
-  BadRequestException,
-  UseFilters,
 } from '@nestjs/common';
-import { GroupService } from './group.service';
-import { CreateGroupDto } from './dto/create-group.dto';
+import { GroupService } from '../group.service';
+import { CreateGroupDto } from '../dto/create-group.dto';
 import { pipe } from 'fp-ts/lib/function';
 import { getOrElse, getOrElse as eitherGetOrElse, map } from 'fp-ts/Either';
 import { getOrElse as optionGetOrElse } from 'fp-ts/lib/Option';
-import { GroupHttpExceptionFilter } from './group.http-exception.filter';
 
 @Controller('group')
 export class GroupController {

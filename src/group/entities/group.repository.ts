@@ -1,6 +1,7 @@
 import { Either } from 'fp-ts/lib/Either';
 import { Group } from './group.entity';
 import { Option } from 'fp-ts/Option';
+
 export interface GroupRepository {
   nextId(): string;
 

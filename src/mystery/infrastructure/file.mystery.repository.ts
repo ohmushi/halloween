@@ -1,13 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Mystery } from '../entities/mystery.entity';
 import { MysteryRepository } from '../entities/mystery.repository';
 import { Either, left, right } from 'fp-ts/Either';
 import { fromNullable, Option } from 'fp-ts/Option';
-import { CodeGenerator } from './code-generator/code-generator';
 import * as fse from 'fs-extra';
-import { DefaultCodeGenerator } from './code-generator/default.code-generator';
-import { boolean, string } from 'fp-ts';
-import e from 'express';
 
 let db: Map<string, Mystery> = new Map();
 const file_path = 'db/mysteries.json';

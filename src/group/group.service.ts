@@ -1,15 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupRepository } from './entities/group.repository';
-import {
-  Either,
-  flatMap,
-  fromOption,
-  left,
-  map,
-  right,
-  match,
-} from 'fp-ts/Either';
+import * as E from 'fp-ts/Either';
+import { Either } from 'fp-ts/Either';
 import { pipe } from 'fp-ts/lib/function';
 import { providers_tokens } from '../providers.tokens';
 import { Option } from 'fp-ts/Option';
@@ -30,20 +23,20 @@ export class GroupService {
     return pipe(
       dto,
       CreateGroupDto.toEntity,
-      flatMap((group) => this.checkConflictsOnGroupName(group)),
-      flatMap((group) => group.withId(this.groups.nextId())),
-      flatMap(this.groups.add),
-      map(Group.id),
+      E.flatMap((group) => this.checkConflictsOnGroupName(group)),
+      E.flatMap((group) => group.withId(this.groups.nextId())),
+      E.flatMap(this.groups.add),
+      E.map(Group.id),
     );
   }
 
   private checkConflictsOnGroupName(group: Group): Either<Error, Group> {
     return pipe(
       this.groups.alreadyKnowTheName(group.name),
-      flatMap((alreadyExists) =>
+      E.flatMap((alreadyExists) =>
         alreadyExists
-          ? left(GroupExceptions.alreadyExists(group.name))
-          : right(group),
+          ? E.left(GroupExceptions.alreadyExists(group.name))
+          : E.right(group),
       ),
     );
   }
@@ -63,8 +56,8 @@ export class GroupService {
   }): Either<Error, boolean> {
     return pipe(
       this.groups.byId(resolveDto.groupId),
-      fromOption(() => GroupExceptions.notFound(resolveDto.groupId)),
-      flatMap((group) =>
+      E.fromOption(() => GroupExceptions.notFound(resolveDto.groupId)),
+      E.flatMap((group) =>
         this.updateAndSaveGroupIfMysteryIsResolved(
           group,
           resolveDto.mysteryCode,
@@ -85,8 +78,10 @@ export class GroupService {
     });
     return pipe(
       resolved,
-      flatMap((isResolved) =>
-        isResolved ? this.updateAndSaveGroup(group, mysteryCode) : right(false),
+      E.flatMap((isResolved) =>
+        isResolved
+          ? this.updateAndSaveGroup(group, mysteryCode)
+          : E.right(false),
       ),
     );
   }
@@ -98,7 +93,7 @@ export class GroupService {
     group.resolved(mysteryCode);
     return pipe(
       this.groups.add(group),
-      map(() => true),
+      E.map(() => true),
     );
   }
 }
