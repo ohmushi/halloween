@@ -17,12 +17,12 @@ export class InMemoryGroupRepository implements GroupRepository {
     return right(db.get(group.id));
   }
 
-  all(): Group[] {
-    return Array.from(db.values());
+  all(): Either<Error, Group[]> {
+    return right(Array.from(db.values()));
   }
 
-  alreadyKnowTheName(name: string): boolean {
-    return Array.from(db.values()).some((group) => group.name == name);
+  alreadyKnowTheName(name: string): Either<Error, boolean> {
+    return right(Array.from(db.values()).some((group) => group.name == name));
   }
 
   byId(id: string): Option<Group> {

@@ -1,6 +1,6 @@
 import { tryCatch } from 'fp-ts/lib/Either';
 import { Either } from 'fp-ts/Either';
-import { GroupExceptions } from "../exceptions/group.exceptions";
+import { GroupExceptions } from '../exceptions/group.exceptions';
 
 export class Group {
   private constructor(
@@ -27,7 +27,10 @@ export class Group {
   }
 
   resolved(mysteryCode: string) {
-    this.mysteriesResolved.push(mysteryCode);
+    if (!this.mysteriesResolved.includes(mysteryCode)) {
+      this.mysteriesResolved.push(mysteryCode);
+    }
+    console.log(this);
   }
 
   static id(group: Group): string | null {

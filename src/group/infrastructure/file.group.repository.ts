@@ -1,9 +1,18 @@
 import { GroupRepository } from '../entities/group.repository';
 import { Injectable } from '@nestjs/common';
 import { Group } from '../entities/group.entity';
-import { fromNullable, Option } from 'fp-ts/Option';
+import {
+  fromEither,
+  fromNullable,
+  Option,
+  match as Omatch,
+  none,
+  some,
+  flatMap as OflatMap,
+} from 'fp-ts/Option';
 import {
   Either,
+  flatMap,
   left,
   map as mapEither,
   match,
@@ -63,38 +72,35 @@ export class FileGroupRepository implements GroupRepository {
     }
   }
 
-  all(): Group[] {
-    // TODO return either
-    db = pipe(
+  all(): Either<Error, Group[]> {
+    return pipe(
       this.db_from_file(file_path),
-      match(
-        () => new Map(), // on error
-        (db) => db,
-      ),
+      flatMap((fileDb) => {
+        db = fileDb;
+        return right(Array.from(db.values()));
+      }),
     );
-    return Array.from(db.values());
   }
 
-  alreadyKnowTheName(name: string): boolean {
-    // TODO return either
-    db = pipe(
+  alreadyKnowTheName(name: string): Either<Error, boolean> {
+    return pipe(
       this.db_from_file(file_path),
-      match(
-        () => new Map(), // on error
-        (db) => db,
-      ),
+      flatMap((fileDb) => {
+        db = fileDb;
+        return right(
+          Array.from(db.values()).some((group) => group.name == name),
+        );
+      }),
     );
-    return Array.from(db.values()).some((group) => group.name == name);
   }
 
   byId(id: string): Option<Group> {
-    db = pipe(
-      this.db_from_file(file_path),
-      match(
-        () => new Map(), // on error
-        (db) => db,
-      ),
+    return pipe(
+      fromEither(this.db_from_file(file_path)),
+      OflatMap((fileDb) => {
+        db = fileDb;
+        return fromNullable(db.get(id));
+      }),
     );
-    return fromNullable(db.get(id));
   }
 }

@@ -10,7 +10,6 @@ import { Option, map } from 'fp-ts/Option';
 import { CodeGenerator } from './infrastructure/code-generator/code-generator';
 import { MysteryException } from './exceptions/mystery.exeptions';
 
-
 @Injectable()
 export class MysteryService {
   constructor(

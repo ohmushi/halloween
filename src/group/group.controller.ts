@@ -6,8 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  NotFoundException, Query
-} from "@nestjs/common";
+  NotFoundException,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { pipe } from 'fp-ts/lib/function';
@@ -30,7 +32,12 @@ export class GroupController {
 
   @Get()
   findAll() {
-    return this.groupService.findAll();
+    return pipe(
+      this.groupService.findAll(),
+      eitherGetOrElse((e) => {
+        throw e;
+      }),
+    );
   }
 
   @Get(':id')
@@ -54,6 +61,8 @@ export class GroupController {
       mysteryCode: mysteryCode,
       answer: answer,
     };
+    if (!groupId || !mysteryCode || !answer)
+      throw new BadRequestException(resolveDto);
     return pipe(
       this.groupService.resolve(resolveDto),
       map((isResolved) => {

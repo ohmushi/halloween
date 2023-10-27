@@ -5,8 +5,8 @@ export interface GroupRepository {
   nextId(): string;
 
   add(group: Group): Either<Error, Group>;
-  alreadyKnowTheName(name: string): boolean;
-  all(): Group[];
+  alreadyKnowTheName(name: string): Either<Error, boolean>;
+  all(): Either<Error, Group[]>;
 
   byId(id: string): Option<Group>;
 }

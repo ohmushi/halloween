@@ -27,19 +27,28 @@ export class GroupService {
   ) {}
 
   create(dto: CreateGroupDto): Either<Error, string> {
-    if (this.groups.alreadyKnowTheName(dto.name)) {
-      return left(Error(`This name "${dto.name}" has already been taken.`));
-    }
     return pipe(
       dto,
       CreateGroupDto.toEntity,
+      flatMap((group) => this.checkConflictsOnGroupName(group)),
       flatMap((group) => group.withId(this.groups.nextId())),
       flatMap(this.groups.add),
       map(Group.id),
     );
   }
 
-  findAll(): Group[] {
+  private checkConflictsOnGroupName(group: Group): Either<Error, Group> {
+    return pipe(
+      this.groups.alreadyKnowTheName(group.name),
+      flatMap((alreadyExists) =>
+        alreadyExists
+          ? left(Error(`This name "${group.name}" has already been taken.`))
+          : right(group),
+      ),
+    );
+  }
+
+  findAll(): Either<Error, Group[]> {
     return this.groups.all();
   }
 
@@ -70,8 +79,10 @@ export class GroupService {
     mysteryCode: string,
     answer: string,
   ): Either<Error, boolean> {
-    const resolved = this.answerToMystery.answer({ answer: answer, mysteryCode: mysteryCode });
-    console.log('resolved', resolved);
+    const resolved = this.answerToMystery.answer({
+      answer: answer,
+      mysteryCode: mysteryCode,
+    });
     return pipe(
       resolved,
       flatMap((isResolved) =>

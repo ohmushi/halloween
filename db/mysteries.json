@@ -5,8 +5,16 @@
       "id": "1",
       "code": "RSN",
       "clue": "music",
-      "solution": "note",
-      "resolvedByGroups": []
+      "solution": "note"
+    }
+  ],
+  [
+    "2",
+    {
+      "id": "2",
+      "code": "BHZ",
+      "clue": "music",
+      "solution": "note"
     }
   ]
 ]
