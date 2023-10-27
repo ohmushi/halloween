@@ -42,7 +42,7 @@ export class GroupService {
       this.groups.alreadyKnowTheName(group.name),
       flatMap((alreadyExists) =>
         alreadyExists
-          ? left(Error(`This name "${group.name}" has already been taken.`))
+          ? left(GroupExceptions.alreadyExists(group.name))
           : right(group),
       ),
     );

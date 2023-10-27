@@ -1,3 +1,5 @@
+import { string } from 'fp-ts';
+
 export class MysteryException extends Error {
   static idNotFound(id: string): MysteryNotFoundException {
     return MysteryNotFoundException.idNotFound(id);
@@ -8,9 +10,7 @@ export class MysteryException extends Error {
   }
 
   static illegalArgument(field: string, data: string) {
-    return new MysteryException(
-      `Mystery illegal argument [${data}] for filed ${field}.`,
-    );
+    return InvalidMysteryException.illegalArgument(field, data);
   }
 }
 export class MysteryNotFoundException extends MysteryException {
@@ -21,6 +21,14 @@ export class MysteryNotFoundException extends MysteryException {
   static codeNotFound(code: string): MysteryNotFoundException {
     return new MysteryNotFoundException(
       `Mystery with code [${code}] not found.`,
+    );
+  }
+}
+
+export class InvalidMysteryException extends MysteryException {
+  static illegalArgument(field: string, data: string) {
+    return new InvalidMysteryException(
+      `Mystery illegal argument [${data}] for filed ${field}.`,
     );
   }
 }

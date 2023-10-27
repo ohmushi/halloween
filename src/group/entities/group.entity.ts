@@ -16,13 +16,13 @@ export class Group {
   static create(name: string): Either<Error, Group> {
     return tryCatch(
       () => new Group(null, name, []),
-      (e) => (e instanceof Error ? e : new Error('unknown error')),
+      (e: GroupExceptions) => e,
     );
   }
   withId(id: string): Either<Error, Group> {
     return tryCatch(
       () => new Group(id, this.name, this.mysteriesResolved),
-      (e) => (e instanceof Error ? e : new Error('unknown error')),
+      (e: GroupExceptions) => e,
     );
   }
 
@@ -30,7 +30,6 @@ export class Group {
     if (!this.mysteriesResolved.includes(mysteryCode)) {
       this.mysteriesResolved.push(mysteryCode);
     }
-    console.log(this);
   }
 
   static id(group: Group): string | null {

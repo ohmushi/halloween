@@ -8,5 +8,13 @@
         "RSN"
       ]
     }
+  ],
+  [
+    "2",
+    {
+      "id": "2",
+      "name": "test2",
+      "mysteriesResolved": []
+    }
   ]
 ]
